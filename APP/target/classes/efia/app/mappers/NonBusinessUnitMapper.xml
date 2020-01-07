@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="efia.app.dao.NonBusinessUnitDao">
+
+	<resultMap type="NonBusinessUnit" id="NonBusinessUnitResult">
+		<id property="period" column="PERIOD" />
+		<id property="rank" column="RANK" />
+		<result property="country" column="COUNTRY" />
+		<result property="amt" column="AMT" />
+		<result property="percentage" column="PERCENTAGE" />
+		<result property="comments" column="COMMENTS" />
+	</resultMap>
+	
+	<sql id="selector">
+		select * from APPTNON_BUSINESS_UNIT
+	</sql>
+
+	<select id="getByPkey" parameterType="Map" resultMap="NonBusinessUnitResult">
+		<include refid="selector"/> 
+		<where>
+			<if test="period != null">
+				and PERIOD = #{period}
+			</if>
+			<if test="rank != null">
+				and RANK = #{rank}
+			</if>
+		</where> 
+	</select>
+	
+	<select id="countAll"  resultType="int">
+        select count(*) from APPTNON_BUSINESS_UNIT
+    </select>
+    
+    <select id="listAll" resultMap="NonBusinessUnitResult">
+        <include refid="selector"/>
+    </select>
+	
+	<select id="countByCondition" parameterType="Map" resultType="int">
+        select count(*) from APPTNON_BUSINESS_UNIT
+        <where>
+            <if test="period != null">
+                and PERIOD = #{period}
+            </if>
+            <if test="country != null">
+                and COUNTRY = #{country}
+            </if>
+        </where>
+    </select>
+
+    <select id="listByCondition" parameterType="Map" resultMap="NonBusinessUnitResult">
+        <include refid="selector"/>
+        <where>
+            <if test="period != null">
+                and PERIOD = #{period}
+            </if>
+            <if test="country != null">
+                and COUNTRY = #{country}
+            </if>
+        </where>
+        <if test="limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+	
+	<insert id="create" parameterType="NonBusinessUnit">
+		insert into
+		APPTNON_BUSINESS_UNIT(PERIOD, RANK, COUNTRY, AMT, PERCENTAGE,
+		  COMMENTS)
+		values(#{period}, #{rank}, #{country}, #{amt},
+		  #{percentage}, #{comments})
+	</insert>
+	
+	<insert id="createW" parameterType="NonBusinessUnit">
+        insert into
+        APPWNON_BUSINESS_UNIT(PERIOD, RANK, COUNTRY, AMT, PERCENTAGE,
+		  COMMENTS)
+        values(#{period}, #{rank}, #{country}, #{amt},
+		  #{percentage}, #{comments})
+    </insert>
+    
+    <insert id="createFromTemp">
+        insert into APPTNON_BUSINESS_UNIT 
+         select * from APPWNON_BUSINESS_UNIT
+    </insert>
+
+	<delete id="delete" parameterType="Map">
+		delete from APPTNON_BUSINESS_UNIT where PERIOD = #{period} and RANK = #{rank}
+	</delete>
+	
+	<delete id="deleteAll">
+        delete from APPTNON_BUSINESS_UNIT
+    </delete>
+    
+    <delete id="deleteWAll">
+        delete from APPWNON_BUSINESS_UNIT
+    </delete>
+
+	<update id="update" parameterType="NonBusinessUnit">
+		update APPTNON_BUSINESS_UNIT
+		<set>
+		<if test="country != null">
+		    COUNTRY = #{country},
+		</if>
+		<if test="amt != null">
+            AMT = #{amt},
+        </if>
+        <if test="percentage != null">
+            PERCENTAGE = #{percentage},
+        </if>
+        <if test="comments != null">
+        	COMMENTS = #{comments},
+        </if>
+		</set>
+		where PERIOD = #{period}
+		  and RANK = #{rank}
+	</update>
+
+</mapper>
